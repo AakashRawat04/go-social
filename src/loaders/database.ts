@@ -4,7 +4,7 @@ import config from '@/config';
 let database: SupabaseClient;
 
 async function initializeClient() {
-  const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY);
+  const supabase = createClient(config.SUPABASE.URL, config.SUPABASE.KEY);
 
   return supabase;
 }

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, json } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import LoggerInstance from '@/loaders/logger';
 import { ERRORS } from '../errors';
 

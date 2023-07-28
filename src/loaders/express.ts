@@ -39,6 +39,8 @@ export default ({ app }: { app: express.Application }): void => {
 
   app.use(express.urlencoded({ extended: true }));
 
+  app.set('trust proxy', '127.0.0.1');
+
   const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 100,

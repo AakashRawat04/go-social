@@ -1,27 +1,26 @@
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 
-export const upload = multer({
-  limits: { fileSize: 10000000 },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-  storage: multer.diskStorage({
-    destination: function (_, __, cb) {
-      cb(null, './tmp/uploads');
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random());
-      cb(null, `${req.params.slug}-${uniqueSuffix}${path.extname(file.originalname).toLowerCase()}`);
-    },
-  }),
-});
+export const MIME_TYPE = {
+  IMAGE: /jpeg|jpg|png|gif/,
+  VIDEO: /mp4|webm|ogg/,
+  AUDIO: /mp3|wav/,
+};
 
-function checkFileType(file: Express.Multer.File, cb: FileFilterCallback) {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+export const upload = (mimeType: RegExp) => {
+  return multer({
+    limits: { fileSize: 50000000 },
+    fileFilter: function (_req, file, cb) {
+      checkFileType(file, mimeType, cb);
+    },
+    storage: multer.memoryStorage(),
+  });
+};
 
-  const mimetype = filetypes.test(file.mimetype);
+function checkFileType(file: Express.Multer.File, mimeType: RegExp, cb: FileFilterCallback) {
+  const extname = mimeType.test(path.extname(file.originalname).toLowerCase());
+
+  const mimetype = mimeType.test(file.mimetype);
   if (mimetype && extname) {
     return cb(null, true);
   } else {
