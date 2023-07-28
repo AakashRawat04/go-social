@@ -1,0 +1,7 @@
+.DS_STORE
+.env
+.vscode
+.yarn-integrity
+build
+node_modules
+client/public/build
