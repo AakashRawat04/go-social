@@ -1,7 +1,6 @@
 import { db } from '@/loaders/database';
 import { ERRORS } from '@/shared/errors';
 import { NextFunction, Request, Response } from 'express';
-import multer from 'multer';
 
 export const getPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,7 +59,6 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 
     return res.json({ message: 'Post created successfully', post: postData });
   } catch (err) {
-    console.error('Unexpected error:', err);
-    return res.status(500).json({ error: 'Unexpected error occurred' });
+    next(err);
   }
 };
