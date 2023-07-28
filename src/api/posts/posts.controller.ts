@@ -1,5 +1,5 @@
 import { db } from '@/loaders/database';
-import { ERRORS } from '@/shared/errors';
+import { uploadObject } from '@/shared/services/upload';
 import { NextFunction, Request, Response } from 'express';
 
 export const getPosts = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,42 +22,56 @@ export const getPosts = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-const postImage = async (file: Express.Multer.File) => {
-  if (!file) {
-    throw { errorCode: ERRORS.RESOURCE_NOT_FOUND.code, message: ERRORS.RESOURCE_NOT_FOUND.message };
-  }
-
-  // Upload the image to the Supabase storage bucket
-  const { data, error } = await (await db()).storage
-    .from('bucket_name')
-    .upload('posts/' + file.filename, Date.now().toString());
-
-  if (error) {
-    console.error('Error uploading image:', error.message);
-  }
-
-  return data?.path;
-};
-
-export const createPost = async (req: Request, res: Response, next: NextFunction) => {
+export const createPost = async (
+  req: Request & {
+    file: Express.Multer.File;
+  },
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const imageUrl = postImage(req.body.file);
+    const imageUrl = await uploadObject(req.file);
+
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      throw {
+        statusCode: 400,
+        message: 'No token provided',
+      };
+    }
+
+    // Get the user from the token
+    const {
+      data: { user },
+      error: userError,
+    } = await (await db()).auth.getUser(token);
+
+    if (userError) {
+      throw {
+        statusCode: 400,
+        message: userError?.message,
+      };
+    }
 
     // Create a new post in the "posts" table
-    const { data: postData, error: postError } = await (await db()).from('posts').insert({
-      created_by: 'your_username', // Replace this with the actual creator's username
+    const { error: postError } = await (await db()).from('posts').insert({
+      created_by: user?.id,
       image_url: imageUrl,
-      likes: 0, // Default likes value
-      dislikes: 0, // Default dislikes value
-      bookmarks: 0, // Default bookmarks value
+      description: req.body.description,
+      likes: 0,
+      dislikes: 0,
+      bookmarks: 0,
     });
 
     if (postError) {
-      console.error('Error creating post:', postError.message);
-      return res.status(500).json({ error: 'Failed to create post' });
+      throw {
+        statusCode: 400,
+        message: postError?.message,
+      };
     }
 
-    return res.json({ message: 'Post created successfully', post: postData });
+    return res.json({ success: true, message: 'Post created successfully' });
   } catch (err) {
     next(err);
   }
