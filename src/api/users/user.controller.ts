@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { data, error } = await (await db()).from('profiles').select('*');
+    const { data, error } = await (await db()).from('profiles').select('id, name, avatar');
 
     if (error) {
       throw {
