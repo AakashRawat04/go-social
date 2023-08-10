@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-// import { verifyToken } from './jwt';
 import LoggerInstance from '@/loaders/logger';
 import { ERRORS } from '../errors';
 import { db } from '@/loaders/database';
@@ -17,14 +16,12 @@ export default function authenticateToken() {
 
       const authResp = await (await db()).auth.getUser(token);
 
-      if (!authResp.error) {
+      if (authResp.error) {
         throw {
           statusCode: 404,
           message: authResp.error,
         };
       }
-
-      res.locals.user = authResp.data.user;
 
       next();
     } catch (error) {
