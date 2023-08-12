@@ -9,8 +9,7 @@ async function startServer() {
 
   await Loaders({ expressApp: app });
 
-  app;
-  const server = app
+  app
     .listen(config.PORT, () => {
       const url = process.env.NODE_ENV === 'production' ? config.PRODUCTION_URL : `http://localhost:${config.PORT}`;
 
