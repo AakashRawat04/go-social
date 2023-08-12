@@ -76,3 +76,157 @@ export const createReel = async (
     next(err);
   }
 };
+
+export const likeReel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('reels').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: dbError } = await (
+      await db()
+    )
+      .from('reels')
+      .update({
+        likes: data[0].likes + 1,
+      })
+      .match({ id });
+
+    if (dbError) {
+      throw {
+        statusCode: 400,
+        message: dbError?.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Reel liked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unlikeReel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('reels').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: dbError } = await (
+      await db()
+    )
+
+      .from('reels')
+      .update({
+        likes: data[0].likes - 1,
+      })
+      .match({ id });
+
+    if (dbError) {
+      throw {
+        statusCode: 400,
+        message: dbError?.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Reel unliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const dislikeReel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('reels').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: dbError } = await (
+      await db()
+    )
+      .from('reels')
+      .update({
+        dislikes: data[0].dislikes + 1,
+      })
+      .match({ id });
+
+    if (dbError) {
+      throw {
+        statusCode: 400,
+        message: dbError?.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Reel disliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const undislikeReel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('reels').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: dbError } = await (
+      await db()
+    )
+
+      .from('reels')
+      .update({
+        dislikes: data[0].dislikes - 1,
+      })
+      .match({ id });
+
+    if (dbError) {
+      throw {
+        statusCode: 400,
+        message: dbError?.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Reel undisliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
