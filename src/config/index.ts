@@ -11,12 +11,14 @@ const envSchema = z.object({
   SUPABASE_KEY: z.string(),
   SUPABASE_URL: z.string(),
   SUPABASE_BUCKET_NAME: z.string(),
+  PRODUCTION_URL: z.string().optional(),
 });
 
 const parsedSchema = envSchema.parse(process.env);
 
 export default {
   NODE_ENV: parsedSchema.NODE_ENV,
+  PRODUCTION_URL: parsedSchema.PRODUCTION_URL,
 
   PORT: parsedSchema.PORT,
 
