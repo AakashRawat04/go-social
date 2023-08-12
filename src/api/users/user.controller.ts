@@ -67,8 +67,6 @@ export const followUser = async (req: Request, res: Response, next: NextFunction
       };
     }
 
-    console.log('Hee');
-
     const { error: followError } = await (
       await db()
     )

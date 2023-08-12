@@ -1,6 +1,7 @@
 import config from '@/config';
 import { ERRORS } from '../errors';
 import { db } from '@/loaders/database';
+import crypto from 'crypto';
 
 export const uploadObject = async (file: Express.Multer.File) => {
   if (!file) {
