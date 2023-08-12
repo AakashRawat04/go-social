@@ -41,5 +41,6 @@
     "winston": "^3.9.0"
   },
   "author": "ash04",
-  "license": "MIT"
+  "license": "MIT",
+  "NIXPACKS_INSTALL_CMD": "yarn install"
 }
