@@ -40,6 +40,6 @@
     "typescript-transform-paths": "^3.4.6",
     "winston": "^3.9.0"
   },
-  "author": "kzilla",
-  "license": ""
+  "author": "ash04",
+  "license": "MIT"
 }
