@@ -76,3 +76,156 @@ export const createPost = async (
     next(err);
   }
 };
+
+export const likePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('posts').select().match({ id });
+
+    console.log(data);
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: updateError } = await (
+      await db()
+    )
+      .from('posts')
+      .update({
+        likes: data[0].likes + 1,
+      })
+      .match({ id });
+
+    if (updateError) {
+      throw {
+        statusCode: 400,
+        message: updateError.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Post liked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unlikePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('posts').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: updateError } = await (
+      await db()
+    )
+      .from('posts')
+      .update({
+        likes: data[0].likes - 1,
+      })
+      .match({ id });
+
+    if (updateError) {
+      throw {
+        statusCode: 400,
+        message: updateError.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Post unliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const dislikePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('posts').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: updateError } = await (
+      await db()
+    )
+      .from('posts')
+      .update({
+        dislikes: data[0].dislikes + 1,
+      })
+      .match({ id });
+
+    if (updateError) {
+      throw {
+        statusCode: 400,
+        message: updateError.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Post disliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const undislikePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await (await db()).from('posts').select().match({ id });
+
+    if (error) {
+      throw {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+
+    const { error: updateError } = await (
+      await db()
+    )
+      .from('posts')
+      .update({
+        dislikes: data[0].dislikes - 1,
+      })
+      .match({ id });
+
+    if (updateError) {
+      throw {
+        statusCode: 400,
+        message: updateError.message,
+      };
+    }
+
+    res.json({
+      success: true,
+      message: 'Post undisliked successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
